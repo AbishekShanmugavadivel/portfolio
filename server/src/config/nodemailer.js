@@ -5,7 +5,7 @@ dotenv.config();
 
 export const createTransporter = () => {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const port = parseInt(process.env.SMTP_PORT || '587', 10);
+  const port = parseInt(process.env.SMTP_PORT || '465', 10);
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
 
@@ -17,9 +17,9 @@ export const createTransporter = () => {
       user,
       pass,
     },
-    connectionTimeout: 8000, // 8 sec connection timeout
-    greetingTimeout: 5000,   // 5 sec greeting timeout
-    socketTimeout: 10000,    // 10 sec socket timeout
+    connectionTimeout: 10000, // 10 sec connection timeout
+    greetingTimeout: 8000,   // 8 sec greeting timeout
+    socketTimeout: 15000,    // 15 sec socket timeout
     tls: {
       rejectUnauthorized: false
     }
