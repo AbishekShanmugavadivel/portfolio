@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Mail, MapPin, Send, Check, Copy, MessageSquare, AlertCircle, Loader2 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, TwitterIcon } from './SocialIcons';
 import { personalInfo } from '../data/portfolioData';
+import { API_PREFIX } from '../config/api';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -42,10 +43,8 @@ export default function Contact() {
     setErrorMessage('');
     setSuccessMessage('');
 
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
     try {
-      const response = await fetch(`${apiUrl}/api/contact`, {
+      const response = await fetch(`${API_PREFIX}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

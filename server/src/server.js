@@ -15,14 +15,20 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet());
 
 // CORS Configuration
-const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173'
+].filter(Boolean);
+
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, or postman)
-    if (!origin || origin === allowedOrigin || allowedOrigin === '*') {
+    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
       return callback(null, true);
     }
-    return callback(null, true); // Permissive fallback for development
+    return callback(null, true); // Fallback for dev environments
   },
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -31,6 +37,14 @@ app.use(cors({
 
 // Body Parser Middleware
 app.use(express.json({ limit: '10kb' }));
+
+// Root Health Route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Portfolio API is running successfully'
+  });
+});
 
 // API Routes
 app.use('/api', healthRoutes);
@@ -48,8 +62,11 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 // Start Express Listener
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`[Portfolio Backend] Server running on port ${PORT}`);
+  console.log(`[Portfolio Backend] Root Endpoint: http://localhost:${PORT}/`);
   console.log(`[Portfolio Backend] Health Endpoint: http://localhost:${PORT}/api/health`);
   console.log(`[Portfolio Backend] Contact Endpoint: http://localhost:${PORT}/api/contact`);
 });
+
+

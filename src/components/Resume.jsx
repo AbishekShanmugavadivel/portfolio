@@ -9,7 +9,7 @@ export default function Resume() {
 
   const handleDownloadResume = () => {
     setDownloading(true);
-    
+
     // Trigger confetti celebration effect
     confetti({
       particleCount: 80,
@@ -29,7 +29,7 @@ export default function Resume() {
   return (
     <section id="resume" className="py-20 bg-slate-50 border-b border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
           <span className="text-sm font-bold text-blue-600 uppercase tracking-widest bg-blue-100/70 px-3.5 py-1 rounded-full inline-block border border-blue-200/60">
@@ -48,7 +48,7 @@ export default function Resume() {
         <div className="max-w-4xl mx-auto mb-16 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-800 text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden text-left flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl z-10">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold uppercase tracking-wider backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5" /> Updated 2026 PDF
+              Updated 2026 PDF
             </span>
             <h3 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight">
               Ready to Explore My Full Profile?
@@ -75,7 +75,7 @@ export default function Resume() {
 
         {/* Interactive Resume Timeline Overview */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left">
-          
+
           {/* Education Card */}
           <div className="bg-white rounded-2xl p-5 sm:p-8 border border-slate-200/90 shadow-sm space-y-6">
             <div className="flex items-center gap-3 pb-4 border-b border-slate-100">

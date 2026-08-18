@@ -6,7 +6,7 @@ export const personalInfo = {
   title: "Full Stack Developer | AI/ML Enthusiast",
   heroDescription: "I build modern, responsive and user-friendly web applications and AI-powered solutions that solve real-world problems.",
   aboutDescription: "I'm a passionate Full Stack Developer who enjoys building modern web applications and AI-powered solutions. I love solving real-world problems, learning new technologies, and turning ideas into useful digital experiences.",
-  location: "Kumbakonam, TN",
+  location: "Kumbakonam, TAMIL NADU",
   experience: "Fresher",
   email: "abishekgasckcs@gmail.com",
   education: "B.Sc. Computer Science",
