@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { Download, GraduationCap, Briefcase, CheckCircle, Sparkles } from 'lucide-react';
+import { Download, Eye, GraduationCap, Briefcase, CheckCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { resumeData } from '../data/portfolioData';
-import { generateResumePDF } from '../utils/generateResumePDF';
 
 export default function Resume() {
   const [downloading, setDownloading] = useState(false);
@@ -18,9 +17,14 @@ export default function Resume() {
     });
 
     try {
-      generateResumePDF();
+      const link = document.createElement('a');
+      link.href = '/resume/abishek-resume.pdf';
+      link.download = 'abishek-resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (err) {
-      console.error('Error generating PDF:', err);
+      console.error('Error downloading PDF:', err);
     } finally {
       setTimeout(() => setDownloading(false), 1000);
     }
@@ -58,7 +62,17 @@ export default function Resume() {
             </p>
           </div>
 
-          <div className="z-10 shrink-0 w-full sm:w-auto">
+          <div className="z-10 shrink-0 w-full sm:w-auto flex flex-col sm:flex-row items-center gap-3">
+            <a
+              href="/resume/abishek-resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 sm:py-4 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm sm:text-base border border-white/30 backdrop-blur-md transition-all cursor-pointer"
+            >
+              <Eye className="w-5 h-5" />
+              View Resume
+            </a>
+
             <button
               onClick={handleDownloadResume}
               disabled={downloading}

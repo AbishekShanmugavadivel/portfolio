@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { X, ShieldCheck, Building2, Calendar } from 'lucide-react';
+import { X, ShieldCheck, Building2, Calendar, UserCheck } from 'lucide-react';
 
 export default function CertificateModal({ certificate, onClose }) {
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function CertificateModal({ certificate, onClose }) {
               <span className="text-[10px] sm:text-xs uppercase font-extrabold text-blue-400 tracking-wider block">
                 Official Verified Certificate
               </span>
-              <h3 className="text-lg sm:text-xl font-bold text-white truncate">
+              <h3 className="text-lg sm:text-xl font-bold text-white truncate" title={certificate.title}>
                 {certificate.title}
               </h3>
             </div>
@@ -72,7 +72,7 @@ export default function CertificateModal({ certificate, onClose }) {
 
         {/* Footer Details Banner */}
         <div className="p-5 sm:p-6 bg-white border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0">
-          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600 w-full sm:w-auto">
             <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
               <Building2 className="w-4 h-4 text-blue-600 shrink-0" />
               <span className="font-bold text-slate-800">{certificate.issuer}</span>
@@ -80,13 +80,29 @@ export default function CertificateModal({ certificate, onClose }) {
 
             <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
               <Calendar className="w-4 h-4 text-blue-600 shrink-0" />
-              <span className="font-bold text-slate-800">{certificate.date}</span>
+              <span className="font-bold text-slate-800">Issued: {certificate.date}</span>
             </div>
+
+            {certificate.validUntil && (
+              <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                <Calendar className="w-4 h-4 text-blue-600 shrink-0" />
+                <span className="font-bold text-slate-800">Valid Until: {certificate.validUntil}</span>
+              </div>
+            )}
+
+            {certificate.signatory && (
+              <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 max-w-full">
+                <UserCheck className="w-4 h-4 text-blue-600 shrink-0" />
+                <span className="font-medium text-slate-700">
+                  <span className="font-bold text-slate-800">Signatory:</span> {certificate.signatory}
+                </span>
+              </div>
+            )}
           </div>
 
           <button
             onClick={onClose}
-            className="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition-colors cursor-pointer w-full sm:w-auto"
+            className="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm transition-colors cursor-pointer w-full sm:w-auto shrink-0"
           >
             Close
           </button>

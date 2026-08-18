@@ -39,9 +39,18 @@ export default function Contact() {
     e.preventDefault();
     if (status === 'submitting') return; // Prevent duplicate submissions
 
+    if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
+      setStatus('error');
+      setErrorMessage("Please complete all required fields.");
+      return;
+    }
+
     setStatus('submitting');
     setErrorMessage('');
     setSuccessMessage('');
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12-second frontend timeout
 
     try {
       const response = await fetch(`${API_PREFIX}/contact`, {
@@ -49,10 +58,18 @@ export default function Contact() {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
+        signal: controller.signal
       });
 
-      const data = await response.json();
+      clearTimeout(timeoutId);
+
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        data = { success: false, message: "Server returned an unexpected response. Please try again." };
+      }
 
       if (response.ok && data.success) {
         setStatus('success');
@@ -69,9 +86,14 @@ export default function Contact() {
         setErrorMessage(data.message || "Unable to send your message right now. Please try again.");
       }
     } catch (err) {
+      clearTimeout(timeoutId);
       console.error('[Contact Form Connection Error]:', err);
       setStatus('error');
-      setErrorMessage("Unable to send your message right now. Please try again.");
+      if (err.name === 'AbortError') {
+        setErrorMessage("Request timed out. Please check your internet connection or try again.");
+      } else {
+        setErrorMessage("Unable to send your message right now. Please try again.");
+      }
     }
   };
 

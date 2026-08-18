@@ -2,7 +2,8 @@ import { createTransporter } from '../config/nodemailer.js';
 
 export const sendContactEmail = async ({ name, email, subject, message }) => {
   const transporter = createTransporter();
-  const receiverEmail = process.env.CONTACT_RECEIVER_EMAIL || process.env.SMTP_USER;
+  const receiverEmail = process.env.CONTACT_RECEIVER_EMAIL || process.env.SMTP_USER || 'abishekgasckcs@gmail.com';
+  const submittedAt = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -17,22 +18,22 @@ export const sendContactEmail = async ({ name, email, subject, message }) => {
           .field-label { font-size: 11px; text-transform: uppercase; font-weight: bold; color: #64748b; margin-bottom: 4px; }
           .field-value { font-size: 15px; font-weight: 600; color: #0f172a; }
           .message-box { background: #f1f5f9; padding: 16px; border-radius: 12px; border-left: 4px solid #2563eb; font-size: 14px; line-height: 1.6; white-space: pre-wrap; margin-top: 8px; }
-          .footer { margin-top: 32px; pt-4; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center; }
+          .footer { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; text-align: center; }
         </style>
       </head>
       <body>
         <div class="container">
           <div class="header">
-            <h2>📬 New Portfolio Inquiry</h2>
+            <h2>📬 New Portfolio Contact</h2>
           </div>
 
           <div class="field">
-            <div class="field-label">Sender Name</div>
+            <div class="field-label">Name</div>
             <div class="field-value">${name}</div>
           </div>
 
           <div class="field">
-            <div class="field-label">Sender Email</div>
+            <div class="field-label">Email</div>
             <div class="field-value"><a href="mailto:${email}">${email}</a></div>
           </div>
 
@@ -42,8 +43,13 @@ export const sendContactEmail = async ({ name, email, subject, message }) => {
           </div>
 
           <div class="field">
-            <div class="field-label">Message Content</div>
+            <div class="field-label">Message</div>
             <div class="message-box">${message}</div>
+          </div>
+
+          <div class="field">
+            <div class="field-label">Submitted</div>
+            <div class="field-value">${submittedAt}</div>
           </div>
 
           <div class="footer">
@@ -55,13 +61,18 @@ export const sendContactEmail = async ({ name, email, subject, message }) => {
   `;
 
   const mailOptions = {
-    from: `"Portfolio Contact Form" <${process.env.SMTP_USER}>`,
+    from: `"Portfolio Contact" <${process.env.SMTP_USER || 'abishekgasckcs@gmail.com'}>`,
     to: receiverEmail,
     replyTo: email,
-    subject: `[Portfolio Inquiry] ${subject}`,
-    text: `New message from ${name} (${email}):\n\nSubject: ${subject}\n\nMessage:\n${message}`,
+    subject: `[Portfolio Contact] ${subject}`,
+    text: `New Portfolio Contact\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}\n\nSubmitted: ${submittedAt}`,
     html: htmlContent,
   };
 
-  return await transporter.sendMail(mailOptions);
+  const sendPromise = transporter.sendMail(mailOptions);
+  const timeoutPromise = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('Email server connection timed out. Please try again later.')), 9000)
+  );
+
+  return await Promise.race([sendPromise, timeoutPromise]);
 };

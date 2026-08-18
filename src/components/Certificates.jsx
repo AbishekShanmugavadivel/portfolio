@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Award, ArrowRight, Eye, Calendar, Building2, ShieldCheck } from 'lucide-react';
+import { Award, ArrowRight, Eye, Calendar, Building2, ShieldCheck, UserCheck } from 'lucide-react';
 import { certificatesData } from '../data/portfolioData';
 import CertificateModal from './CertificateModal';
 
@@ -54,9 +54,9 @@ export default function Certificates() {
 
                 {/* Card Info Content */}
                 <div className="p-6 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-blue-600 shrink-0" />
-                    <h3 className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
+                  <div className="flex items-start gap-2">
+                    <Award className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                    <h3 className="text-lg font-semibold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2" title={cert.title}>
                       {cert.title}
                     </h3>
                   </div>
@@ -68,13 +68,27 @@ export default function Certificates() {
                     </p>
                     <p className="flex items-center gap-2 text-slate-500">
                       <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
-                      <span>{cert.date}</span>
+                      <span>Issued: {cert.date}</span>
                     </p>
+                    {cert.validUntil && (
+                      <p className="flex items-center gap-2 text-slate-500">
+                        <Calendar className="w-4 h-4 text-slate-400 shrink-0" />
+                        <span>Valid Until: {cert.validUntil}</span>
+                      </p>
+                    )}
+                    {cert.signatory && (
+                      <p className="flex items-start gap-2 text-slate-500">
+                        <UserCheck className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+                        <span className="line-clamp-2"><span className="font-semibold text-slate-700">Signatory:</span> {cert.signatory}</span>
+                      </p>
+                    )}
                   </div>
 
-                  <p className="text-slate-600 text-sm font-normal leading-[1.65] pt-1 line-clamp-3">
-                    {cert.description}
-                  </p>
+                  {cert.description && (
+                    <p className="text-slate-600 text-sm font-normal leading-[1.65] pt-1 line-clamp-3">
+                      {cert.description}
+                    </p>
+                  )}
                 </div>
               </div>
 

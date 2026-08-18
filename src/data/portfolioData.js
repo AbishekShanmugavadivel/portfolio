@@ -14,7 +14,7 @@ export const personalInfo = {
   github: "https://github.com/AbishekShanmugavadivel",
   linkedin: "https://www.linkedin.com/in/abishek0204/",
   twitter: "https://twitter.com/abishek_dev",
-  resumeUrl: "#",
+  resumeUrl: "/resume/abishek-resume.pdf",
 };
 
 export const skillsData = [
@@ -132,6 +132,35 @@ export const certificatesData = [
     image: "/certificates/abishek-full-stack-internship.jpeg",
     badgeColor: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
     icon: "code"
+  },
+  {
+    id: 4,
+    title: "Web Development Fundamentals",
+    issuer: "IBM SkillsBuild",
+    date: "August 13, 2025",
+    image: "/certificates/ibm-web-development-fundamentals.png",
+    badgeColor: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+    icon: "code"
+  },
+  {
+    id: 5,
+    title: "CRUD Operations in MongoDB",
+    issuer: "MongoDB, Inc.",
+    date: "August 18, 2026",
+    signatory: "Rahul Viswanathan, VP, Education, Academia and Documentation, MongoDB, Inc.",
+    image: "/certificates/mongodb-crud-operations.png",
+    badgeColor: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+    icon: "database"
+  },
+  {
+    id: 6,
+    title: "Oracle Cloud Infrastructure 2025 Certified AI Foundations Associate",
+    issuer: "Oracle",
+    date: "February 19, 2026",
+    validUntil: "February 19, 2028",
+    image: "/certificates/oracle-cloud-infrastructure-2025-ai-foundations-associate.png",
+    badgeColor: "bg-red-500/10 text-red-600 border-red-500/20",
+    icon: "cloud"
   }
 ];
 

@@ -17,6 +17,9 @@ export const createTransporter = () => {
       user,
       pass,
     },
+    connectionTimeout: 8000, // 8 sec connection timeout
+    greetingTimeout: 5000,   // 5 sec greeting timeout
+    socketTimeout: 10000,    // 10 sec socket timeout
     tls: {
       rejectUnauthorized: false
     }

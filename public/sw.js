@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abishek-portfolio-v1';
+const CACHE_NAME = 'abishek-portfolio-v3';
 const OFFLINE_URL = '/offline.html';
 
 const PRECACHE_ASSETS = [
@@ -18,7 +18,11 @@ const PRECACHE_ASSETS = [
   '/certificates/abishek-ui-ux-workshop.jpeg',
   '/certificates/abishek-data-analytics-workshop.jpeg',
   '/certificates/abishek-full-stack-internship.jpeg',
-  '/images/abishek-profile.jpg'
+  '/certificates/ibm-web-development-fundamentals.png',
+  '/certificates/mongodb-crud-operations.png',
+  '/certificates/oracle-cloud-infrastructure-2025-ai-foundations-associate.png',
+  '/images/abishek-profile.jpg',
+  '/resume/abishek-resume.pdf'
 ];
 
 // Service Worker Install Event
