@@ -37,63 +37,79 @@ export default function Contact() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (status === 'submitting') return; // Prevent duplicate submissions
 
-    if (!formData.name.trim() || !formData.email.trim() || !formData.subject.trim() || !formData.message.trim()) {
-      setStatus('error');
+    if (status === "submitting") return;
+
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.subject.trim() ||
+      !formData.message.trim()
+    ) {
+      setStatus("error");
       setErrorMessage("Please complete all required fields.");
       return;
     }
 
-    setStatus('submitting');
-    setErrorMessage('');
-    setSuccessMessage('');
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 12000); // 12-second frontend timeout
+    setStatus("submitting");
+    setErrorMessage("");
+    setSuccessMessage("");
 
     try {
       const response = await fetch(`${API_PREFIX}/contact`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
-        signal: controller.signal
       });
 
-      clearTimeout(timeoutId);
-
       let data;
+
       try {
         data = await response.json();
       } catch {
-        data = { success: false, message: "Server returned an unexpected response. Please try again." };
+        data = {
+          success: false,
+          message: "Server returned an unexpected response. Please try again.",
+        };
       }
 
       if (response.ok && data.success) {
-        setStatus('success');
-        setSuccessMessage("Message sent successfully! I'll get back to you soon.");
-        setFormData({ name: '', email: '', subject: '', message: '', website: '' }); // Clear form on success
-        
-        // Reset status to idle after 7 seconds
+        setStatus("success");
+
+        setSuccessMessage(
+          "Message sent successfully! I'll get back to you soon."
+        );
+
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+          website: "",
+        });
+
         setTimeout(() => {
-          setStatus('idle');
-          setSuccessMessage('');
+          setStatus("idle");
+          setSuccessMessage("");
         }, 7000);
       } else {
-        setStatus('error');
-        setErrorMessage(data.message || "Unable to send your message right now. Please try again.");
+        setStatus("error");
+
+        setErrorMessage(
+          data.message ||
+          "Unable to send your message right now. Please try again."
+        );
       }
     } catch (err) {
-      clearTimeout(timeoutId);
-      console.error('[Contact Form Connection Error]:', err);
-      setStatus('error');
-      if (err.name === 'AbortError') {
-        setErrorMessage("Request timed out. Please check your internet connection or try again.");
-      } else {
-        setErrorMessage("Unable to send your message right now. Please try again.");
-      }
+      console.error("[Contact Form Connection Error]:", err);
+
+      setStatus("error");
+
+      setErrorMessage(
+        "Unable to send your message right now. Please try again."
+      );
     }
   };
 
@@ -112,7 +128,7 @@ export default function Contact() {
   return (
     <section id="contact" className="py-20 bg-white border-b border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
           <span className="text-sm font-bold text-blue-600 uppercase tracking-widest bg-blue-50 px-3.5 py-1 rounded-full inline-block border border-blue-200/60">
@@ -129,7 +145,7 @@ export default function Contact() {
 
         {/* Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 text-left items-start">
-          
+
           {/* Left Column: Direct Info Cards & Social Links */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200/80 shadow-xs space-y-6">
@@ -204,7 +220,7 @@ export default function Contact() {
           {/* Right Column: Real Contact Message Form */}
           <div className="lg:col-span-7">
             <div className="bg-slate-50 rounded-3xl p-8 border border-slate-200/80 shadow-xs relative">
-              
+
               {/* Success Alert Banner */}
               {status === 'success' && (
                 <div className="mb-6 p-4 rounded-2xl bg-emerald-600 text-white flex items-center gap-3 animate-fadeIn shadow-lg">
@@ -233,7 +249,7 @@ export default function Contact() {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
-                
+
                 {/* Hidden Honeypot Field for Anti-Spam Bot Protection */}
                 <div style={{ display: 'none' }} aria-hidden="true">
                   <label htmlFor="website">Website</label>
