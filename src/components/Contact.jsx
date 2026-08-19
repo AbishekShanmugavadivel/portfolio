@@ -55,6 +55,9 @@ export default function Contact() {
     setErrorMessage("");
     setSuccessMessage("");
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+
     try {
       const response = await fetch(`${API_PREFIX}/contact`, {
         method: "POST",
@@ -62,6 +65,7 @@ export default function Contact() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        signal: controller.signal,
       });
 
       let data;
@@ -107,9 +111,15 @@ export default function Contact() {
 
       setStatus("error");
 
-      setErrorMessage(
-        "Unable to send your message right now. Please try again."
-      );
+      if (err.name === 'AbortError') {
+        setErrorMessage("The server took too long to respond. Please try again.");
+      } else {
+        setErrorMessage(
+          "Unable to connect to the email server. Please try again."
+        );
+      }
+    } finally {
+      clearTimeout(timeoutId);
     }
   };
 

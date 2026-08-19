@@ -3,7 +3,6 @@ dotenv.config();
 
 import { Resend } from "resend";
 
-// Check whether the API key is loaded
 if (!process.env.RESEND_API_KEY) {
   console.error("[Resend] RESEND_API_KEY is missing.");
 } else {
@@ -12,50 +11,44 @@ if (!process.env.RESEND_API_KEY) {
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// Escape HTML to safely display user-submitted content
-const escapeHtml = (value = "") =>
-  String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-
 export const sendContactEmail = async ({
   name,
   email,
   subject,
   message,
 }) => {
-  // Validate Resend API key
   if (!process.env.RESEND_API_KEY) {
     throw new Error("RESEND_API_KEY is not configured");
   }
 
-  // Email where portfolio messages will be received
   const receiverEmail =
     process.env.CONTACT_EMAIL ||
     "abishekgasckcs@gmail.com";
 
-  // India time
   const submittedAt = new Date().toLocaleString("en-US", {
     timeZone: "Asia/Kolkata",
   });
 
-  // Safely escape user input for HTML
+  // escape HTML user input
+  const escapeHtml = (value = "") =>
+    String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
   const safeName = escapeHtml(name);
   const safeEmail = escapeHtml(email);
   const safeSubject = escapeHtml(subject);
   const safeMessage = escapeHtml(message);
   const safeSubmittedAt = escapeHtml(submittedAt);
 
-  // Email HTML content
   const htmlContent = `
     <!DOCTYPE html>
     <html>
       <head>
         <meta charset="UTF-8" />
-
         <style>
           body {
             font-family: Arial, sans-serif;
@@ -112,7 +105,6 @@ export const sendContactEmail = async ({
             font-size: 14px;
             line-height: 1.6;
             white-space: pre-wrap;
-            margin-top: 8px;
           }
 
           .footer {
@@ -133,63 +125,45 @@ export const sendContactEmail = async ({
 
       <body>
         <div class="container">
-
           <div class="header">
             <h2>New Portfolio Contact</h2>
           </div>
 
           <div class="field">
             <div class="field-label">Name</div>
-
-            <div class="field-value">
-              ${safeName}
-            </div>
+            <div class="field-value">${safeName}</div>
           </div>
 
           <div class="field">
             <div class="field-label">Email</div>
-
             <div class="field-value">
-              <a href="mailto:${safeEmail}">
-                ${safeEmail}
-              </a>
+              <a href="mailto:${safeEmail}">${safeEmail}</a>
             </div>
           </div>
 
           <div class="field">
             <div class="field-label">Subject</div>
-
-            <div class="field-value">
-              ${safeSubject}
-            </div>
+            <div class="field-value">${safeSubject}</div>
           </div>
 
           <div class="field">
             <div class="field-label">Message</div>
-
-            <div class="message-box">
-              ${safeMessage}
-            </div>
+            <div class="message-box">${safeMessage}</div>
           </div>
 
           <div class="field">
             <div class="field-label">Submitted</div>
-
-            <div class="field-value">
-              ${safeSubmittedAt}
-            </div>
+            <div class="field-value">${safeSubmittedAt}</div>
           </div>
 
           <div class="footer">
             Sent automatically from Abishek Portfolio Contact Engine
           </div>
-
         </div>
       </body>
     </html>
   `;
 
-  // Send email through Resend
   const { data, error } = await resend.emails.send({
     from:
       process.env.RESEND_FROM_EMAIL ||
@@ -197,13 +171,10 @@ export const sendContactEmail = async ({
 
     to: [receiverEmail],
 
-    // When you click Reply, it replies to the person
-    // who submitted the portfolio form.
     replyTo: email,
 
     subject: `[Portfolio Contact] ${subject}`,
 
-    // Plain-text version
     text: `
 New Portfolio Contact
 
@@ -217,11 +188,9 @@ ${message}
 Submitted: ${submittedAt}
     `,
 
-    // HTML version
     html: htmlContent,
   });
 
-  // Resend returned an error
   if (error) {
     console.error("[Resend Error]:", error);
 
@@ -230,7 +199,6 @@ Submitted: ${submittedAt}
     );
   }
 
-  // Successful email
   console.log(
     "[Resend] Contact email sent successfully:",
     data?.id

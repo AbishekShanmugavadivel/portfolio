@@ -59,7 +59,7 @@ export const handleContact = async (req, res, next) => {
       });
     }
 
-    // 5. Trigger Nodemailer email delivery
+    // 5. Trigger Resend email delivery
     try {
       await sendContactEmail({
         name: name.trim(),
@@ -68,8 +68,8 @@ export const handleContact = async (req, res, next) => {
         message: message.trim()
       });
     } catch (emailErr) {
-      console.error('[Email Delivery Exception]:', emailErr.message || emailErr);
-      // Return friendly 500 error if SMTP authentication/network fails
+      console.error("[Email Delivery Exception]:", emailErr);
+      // Return friendly 500 error if email delivery fails
       return res.status(500).json({
         success: false,
         message: 'Unable to send your message right now due to server email configuration. Please try again later.'
