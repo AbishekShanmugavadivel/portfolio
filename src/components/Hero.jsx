@@ -68,7 +68,7 @@ export default function Hero() {
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-100 hover:text-white font-semibold text-base border border-slate-700/80 hover:border-blue-500/50 transition-all cursor-pointer backdrop-blur-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
               >
                 <Mail className="w-5 h-5 text-blue-400" />
-                Hire / Contact Me
+                Hire Me
               </button>
             </div>
 
