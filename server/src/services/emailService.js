@@ -1,6 +1,25 @@
+import dotenv from "dotenv";
+dotenv.config();
 
+import { Resend } from "resend";
 
-import { createTransporter } from "../config/nodemailer.js";
+// Check whether the API key is loaded
+if (!process.env.RESEND_API_KEY) {
+  console.error("[Resend] RESEND_API_KEY is missing.");
+} else {
+  console.log("[Resend] API key loaded successfully.");
+}
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Escape HTML to safely display user-submitted content
+const escapeHtml = (value = "") =>
+  String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 
 export const sendContactEmail = async ({
   name,
@@ -8,22 +27,35 @@ export const sendContactEmail = async ({
   subject,
   message,
 }) => {
-  const transporter = createTransporter();
+  // Validate Resend API key
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error("RESEND_API_KEY is not configured");
+  }
 
+  // Email where portfolio messages will be received
   const receiverEmail =
-    process.env.CONTACT_RECEIVER_EMAIL ||
-    process.env.SMTP_USER ||
+    process.env.CONTACT_EMAIL ||
     "abishekgasckcs@gmail.com";
 
+  // India time
   const submittedAt = new Date().toLocaleString("en-US", {
     timeZone: "Asia/Kolkata",
   });
 
+  // Safely escape user input for HTML
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeSubject = escapeHtml(subject);
+  const safeMessage = escapeHtml(message);
+  const safeSubmittedAt = escapeHtml(submittedAt);
+
+  // Email HTML content
   const htmlContent = `
     <!DOCTYPE html>
     <html>
       <head>
         <meta charset="UTF-8" />
+
         <style>
           body {
             font-family: Arial, sans-serif;
@@ -91,6 +123,11 @@ export const sendContactEmail = async ({
             color: #94a3b8;
             text-align: center;
           }
+
+          a {
+            color: #2563eb;
+            text-decoration: none;
+          }
         </style>
       </head>
 
@@ -103,29 +140,44 @@ export const sendContactEmail = async ({
 
           <div class="field">
             <div class="field-label">Name</div>
-            <div class="field-value">${name}</div>
+
+            <div class="field-value">
+              ${safeName}
+            </div>
           </div>
 
           <div class="field">
             <div class="field-label">Email</div>
+
             <div class="field-value">
-              <a href="mailto:${email}">${email}</a>
+              <a href="mailto:${safeEmail}">
+                ${safeEmail}
+              </a>
             </div>
           </div>
 
           <div class="field">
             <div class="field-label">Subject</div>
-            <div class="field-value">${subject}</div>
+
+            <div class="field-value">
+              ${safeSubject}
+            </div>
           </div>
 
           <div class="field">
             <div class="field-label">Message</div>
-            <div class="message-box">${message}</div>
+
+            <div class="message-box">
+              ${safeMessage}
+            </div>
           </div>
 
           <div class="field">
             <div class="field-label">Submitted</div>
-            <div class="field-value">${submittedAt}</div>
+
+            <div class="field-value">
+              ${safeSubmittedAt}
+            </div>
           </div>
 
           <div class="footer">
@@ -137,12 +189,21 @@ export const sendContactEmail = async ({
     </html>
   `;
 
-  const mailOptions = {
-    from: `"Abishek Portfolio" <${process.env.SMTP_USER}>`,
-    to: receiverEmail,
+  // Send email through Resend
+  const { data, error } = await resend.emails.send({
+    from:
+      process.env.RESEND_FROM_EMAIL ||
+      "onboarding@resend.dev",
+
+    to: [receiverEmail],
+
+    // When you click Reply, it replies to the person
+    // who submitted the portfolio form.
     replyTo: email,
+
     subject: `[Portfolio Contact] ${subject}`,
 
+    // Plain-text version
     text: `
 New Portfolio Contact
 
@@ -156,12 +217,24 @@ ${message}
 Submitted: ${submittedAt}
     `,
 
+    // HTML version
     html: htmlContent,
-  };
+  });
 
-  const result = await transporter.sendMail(mailOptions);
+  // Resend returned an error
+  if (error) {
+    console.error("[Resend Error]:", error);
 
-  console.log("[Email] Contact email sent:", result.messageId);
+    throw new Error(
+      error.message || "Failed to send contact email"
+    );
+  }
 
-  return result;
+  // Successful email
+  console.log(
+    "[Resend] Contact email sent successfully:",
+    data?.id
+  );
+
+  return data;
 };
